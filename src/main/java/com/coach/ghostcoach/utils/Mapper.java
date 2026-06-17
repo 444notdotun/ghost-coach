@@ -1,5 +1,6 @@
 package com.coach.ghostcoach.utils;
 
+import com.coach.ghostcoach.data.model.Chatlog;
 import com.coach.ghostcoach.data.model.Feedback;
 import com.coach.ghostcoach.data.model.Player;
 import com.coach.ghostcoach.data.model.Session;
@@ -14,5 +15,11 @@ public class Mapper {
         session.setFeedbackId(feedback);
         session.setPlayerId(player);
         return session;
+    }
+
+    public static Chatlog createChatLog(Session session) {
+        Chatlog chatlog = new Chatlog();
+        chatlog.setSession(session);
+        return chatlog;
     }
 }
