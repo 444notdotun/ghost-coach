@@ -5,4 +5,5 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface ArtificialIntelligence {
     Feedback generateFeedback(MultipartFile file, String prompt);
+    String chatAi(String prompt);
 }

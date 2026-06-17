@@ -11,7 +11,7 @@ import java.util.UUID;
 public class Chatlog {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID chatLogId;
+    private String chatLogId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     private Session session;
