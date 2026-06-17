@@ -154,4 +154,4 @@ Deployment
 
 The app is deployed on Google Cloud Run. The Dockerfile uses a multi-stage build — Maven builder stage compiles the JAR, a slim JRE runtime stage runs it.
 
-Live URL: coming soon
+Live URL: https://ghostcoach-183135031185.us-central1.run.app
