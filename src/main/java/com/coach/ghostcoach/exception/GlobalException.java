@@ -22,7 +22,7 @@ public class GlobalException {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ApiResponse<?>> usernameNotFoundException(UsernameNotFoundException e){
-        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>("Error",e.getMessage()));
+        return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>("Error",e.getMessage()));
     }
     @ExceptionHandler(FileContentTypeException.class)
     public ResponseEntity<ApiResponse<?>> fileContentTypeException(FileContentTypeException e){
@@ -35,5 +35,19 @@ public class GlobalException {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> exception(Exception e){
         return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>("Error",e.getMessage()));
+    }
+    @ExceptionHandler(ChatLogNotFoundException.class)
+    public ResponseEntity<ApiResponse<?>> chatLogNotFoundException(ChatLogNotFoundException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>("Error", e.getMessage()));
+    }
+
+    @ExceptionHandler(SessionNotFoundException.class)
+    public ResponseEntity<ApiResponse<?>> sessionNotFoundException(SessionNotFoundException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>("Error", e.getMessage()));
+    }
+
+    @ExceptionHandler(PlayerNotFoundException.class)
+    public ResponseEntity<ApiResponse<?>> playerNotFoundException(PlayerNotFoundException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>("Error", e.getMessage()));
     }
 }

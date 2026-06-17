@@ -15,10 +15,10 @@ public class Session {
     private  String photoPath;
     @ManyToOne
     @JoinColumn(name = "playerId")
-    private Player playerId;
+    private Player player;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "feedbackId")
-    private Feedback feedbackId;
+    private Feedback feedback;
     @CreationTimestamp
     private LocalDateTime createdAt;
 

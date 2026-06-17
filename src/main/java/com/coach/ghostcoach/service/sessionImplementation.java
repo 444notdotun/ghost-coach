@@ -1,8 +1,10 @@
 package com.coach.ghostcoach.service;
 
+import com.coach.ghostcoach.data.model.Chatlog;
 import com.coach.ghostcoach.data.model.Feedback;
 import com.coach.ghostcoach.data.model.Player;
 import com.coach.ghostcoach.data.model.Session;
+import com.coach.ghostcoach.data.repository.ChatLogRepository;
 import com.coach.ghostcoach.data.repository.FeedbackRepository;
 import com.coach.ghostcoach.data.repository.PlayerRepository;
 import com.coach.ghostcoach.data.repository.SessionRepository;
@@ -29,6 +31,7 @@ public class sessionImplementation implements SessionService {
     private final PlayerRepository playerRepository;
     private final SessionRepository sessionRepository;
     private final FeedbackRepository feedbackRepository;
+    private final ChatLogRepository chatLogRepository;
     ModelMapper mapper = new ModelMapper();
 
     @Override
@@ -40,14 +43,20 @@ public class sessionImplementation implements SessionService {
         Feedback feedback =gemini.generateFeedback(file,prompt);
         feedbackRepository.save(feedback);
        Session session = Mapper.createSession(player,photoPath,feedback);
-       sessionRepository.save(session);
+        createChatLog(session);
+        sessionRepository.save(session);
        return mapper.map(feedback, FeedbackResponse.class);
+    }
+
+    private void createChatLog(Session session) {
+        Chatlog chatlog =Mapper.createChatLog(session);
+        chatLogRepository.save(chatlog);
     }
 
     @Override
     public SessionCard getSession(String sessionId) {
         Session session =sessionRepository.findBySessionId(sessionId).orElseThrow(()-> new SessionNotFoundException("Session Not Found"));
-       Feedback feedback =  session.getFeedbackId();
+       Feedback feedback =  session.getFeedback();
         SessionCard sessionCard= mapper.map(session, SessionCard.class);
         sessionCard.setFullFeedback(feedback);
         return sessionCard;
@@ -56,7 +65,7 @@ public class sessionImplementation implements SessionService {
     @Override
     public List<Session> getAllSession(String playerEmail) {
         Player player = playerRepository.findByEmail(playerEmail).orElseThrow(()-> new PlayerNotFoundException("Player Not Found"));
-        return sessionRepository.findSessionsByPlayerId(player);
+        return sessionRepository.findSessionsByPlayer(player);
     }
 
     private String prompt(String position, String experienceLevel,String sport) {

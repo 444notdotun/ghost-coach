@@ -1,6 +1,6 @@
 package com.coach.ghostcoach.controller;
 
-import com.coach.ghostcoach.data.model.ChatMessage;
+
 import com.coach.ghostcoach.dtos.response.ApiResponse;
 import com.coach.ghostcoach.dtos.response.ChatResponse;
 import com.coach.ghostcoach.service.ChatService;
@@ -15,7 +15,7 @@ public class ChatController {
     private final ChatService ChatService;
     @PostMapping("/{sessionId}/chat")
     public ResponseEntity<ApiResponse<ChatResponse>> chat(@RequestParam String  message, @PathVariable String sessionId){
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<ChatResponse>(ChatService.sendMessage(sessionId,message)));
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(ChatService.sendMessage(sessionId, message)));
 
     }
 }
