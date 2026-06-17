@@ -1,0 +1,13 @@
+package com.coach.ghostcoach.data.repository;
+
+import com.coach.ghostcoach.data.model.Player;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+import java.util.UUID;
+@Repository
+public interface PlayerRepository extends  JpaRepository<Player, String>  {
+    Optional<Player> findByEmail(String email);
+    boolean existsByEmail(String email);
+}

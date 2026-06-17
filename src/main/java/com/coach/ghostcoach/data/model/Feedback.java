@@ -10,7 +10,7 @@ import java.util.UUID;
 public class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID feedbackId;
+    private String feedbackId;
     private int overallScore;
     @Column(columnDefinition = "TEXT")
     private String strengths;
