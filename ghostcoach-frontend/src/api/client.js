@@ -24,6 +24,13 @@ export async function request(path, options = {}) {
     try { data = JSON.parse(text); } catch { /* non-JSON body (e.g. empty 403) */ }
   }
 
+  if (res.status === 401) {
+    localStorage.removeItem("gc_token");
+    localStorage.removeItem("gc_email");
+    window.dispatchEvent(new Event("gc:unauthorized"));
+    throw new Error("Session expired. Please sign in again.");
+  }
+
   if (!res.ok) {
     throw new Error(data?.message || `Request failed (${res.status})`);
   }

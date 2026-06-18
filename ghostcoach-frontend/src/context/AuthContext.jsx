@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext(null);
 
@@ -19,6 +19,11 @@ export function AuthProvider({ children }) {
     setToken(null);
     setEmail("");
   };
+
+  useEffect(() => {
+    window.addEventListener("gc:unauthorized", logout);
+    return () => window.removeEventListener("gc:unauthorized", logout);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ token, email, login, logout, isAuthenticated: !!token }}>
