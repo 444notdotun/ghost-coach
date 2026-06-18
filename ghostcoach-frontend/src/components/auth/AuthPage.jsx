@@ -36,7 +36,9 @@ export default function AuthPage() {
     try {
       if (mode === "login") {
         const res = await apiLogin(form.email, form.password);
-        login(res.data?.token || res.data, form.email);
+        const token = res.data?.token;
+        if (!token) throw new Error("Login succeeded but no token was returned");
+        login(token, form.email);
       } else {
         await apiRegister(form);
         setSuccess("Account created! Sign in to start training.");
