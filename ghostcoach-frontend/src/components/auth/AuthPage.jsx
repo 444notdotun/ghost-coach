@@ -40,9 +40,10 @@ export default function AuthPage() {
         if (!token) throw new Error("Login succeeded but no token was returned");
         login(token, form.email);
       } else {
-        await apiRegister(form);
-        setSuccess("Account created! Sign in to start training.");
-        switchMode("login");
+        const res = await apiRegister(form);
+        const token = res.data?.token;
+        if (!token) throw new Error("Registration succeeded but no token was returned");
+        login(token, form.email);
       }
     } catch (e) {
       setError(e.message);
