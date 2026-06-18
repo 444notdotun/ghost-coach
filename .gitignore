@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Secrets & uploads ###
+.env
+PlayerUploads/
+*.png
+*.jpg
+*.jpeg
