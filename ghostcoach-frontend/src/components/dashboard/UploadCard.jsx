@@ -27,7 +27,8 @@ export default function UploadCard({ onFeedbackReady }) {
     try {
       const res = await uploadForFeedback(file);
       if (!res.data) throw new Error("No feedback returned");
-      onFeedbackReady(res.data);
+      const { sessionId, ...feedbackFields } = res.data;
+      onFeedbackReady({ sessionId, feedback: feedbackFields });
     } catch (e) {
       setError(e.message);
     } finally {

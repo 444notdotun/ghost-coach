@@ -10,16 +10,34 @@ const FITNESS_PHOTOS = [
   "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=800&q=80",
 ];
 
-const INITIAL_FORM = { email: "", password: "", sport: "football", position: "striker", experienceLevel: "BEGINNER" };
+const SPORTS = [
+  { value: "football", label: "Football", icon: "⚽" },
+  { value: "basketball", label: "Basketball", icon: "🏀" },
+  { value: "tennis", label: "Tennis", icon: "🎾" },
+  { value: "athletics", label: "Athletics", icon: "🏃" },
+  { value: "boxing", label: "Boxing", icon: "🥊" },
+  { value: "swimming", label: "Swimming", icon: "🏊" },
+];
+
+const LEVELS = [
+  { value: "BEGINNER", label: "Beginner", desc: "Just starting out" },
+  { value: "INTERMEDIATE", label: "Intermediate", desc: "Know the basics" },
+  { value: "ADVANCED", label: "Advanced", desc: "Competing regularly" },
+  { value: "PROFESSIONAL", label: "Professional", desc: "Elite level" },
+];
+
+const INITIAL_FORM = { email: "", password: "", sport: "football", position: "", experienceLevel: "BEGINNER" };
+
+const STEP_LABELS = ["Account", "Your Sport", "Your Level"];
 
 export default function AuthPage() {
   const { login } = useAuth();
   const [mode, setMode] = useState("login");
+  const [step, setStep] = useState(1);
   const [photoIdx, setPhotoIdx] = useState(0);
   const [form, setForm] = useState(INITIAL_FORM);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     const t = setInterval(() => setPhotoIdx(i => (i + 1) % FITNESS_PHOTOS.length), 4000);
@@ -28,10 +46,26 @@ export default function AuthPage() {
 
   const update = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
-  const switchMode = (next) => { setMode(next); setError(""); setSuccess(""); };
+  const switchMode = (next) => {
+    setMode(next);
+    setStep(1);
+    setError("");
+    setForm(INITIAL_FORM);
+  };
+
+  const nextStep = () => {
+    setError("");
+    if (step === 1) {
+      if (!form.email.trim() || !form.password.trim()) {
+        setError("Please fill in your email and password.");
+        return;
+      }
+    }
+    setStep(s => s + 1);
+  };
 
   const submit = async () => {
-    setError(""); setSuccess("");
+    setError("");
     setLoading(true);
     try {
       if (mode === "login") {
@@ -49,6 +83,96 @@ export default function AuthPage() {
       setError(e.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const renderRegisterStep = () => {
+    if (step === 1) {
+      return (
+        <>
+          <div className="auth-title">Create account</div>
+          <div className="auth-sub">Start your coaching journey today</div>
+          {error && <div className="error-msg">{error}</div>}
+          <div className="form-group">
+            <label className="form-label">Email</label>
+            <input className="form-input" type="email" placeholder="you@example.com" value={form.email}
+              onChange={e => update("email", e.target.value)} onKeyDown={e => e.key === "Enter" && nextStep()} />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Password</label>
+            <input className="form-input" type="password" placeholder="••••••••" value={form.password}
+              onChange={e => update("password", e.target.value)} onKeyDown={e => e.key === "Enter" && nextStep()} />
+          </div>
+          <button className="btn btn-primary" onClick={nextStep}>Continue</button>
+        </>
+      );
+    }
+
+    if (step === 2) {
+      return (
+        <>
+          <div className="auth-title">What's your sport?</div>
+          <div className="auth-sub">We'll tailor your coaching to your discipline</div>
+          {error && <div className="error-msg">{error}</div>}
+          <div className="sport-cards">
+            {SPORTS.map(s => (
+              <div
+                key={s.value}
+                className={`sport-card${form.sport === s.value ? " selected" : ""}`}
+                onClick={() => update("sport", s.value)}
+              >
+                <div className="sport-card-icon">{s.icon}</div>
+                <div className="sport-card-label">{s.label}</div>
+              </div>
+            ))}
+          </div>
+          <div className="form-group">
+            <label className="form-label">Your position / role</label>
+            <input
+              className="form-input"
+              placeholder="e.g. Striker, Point Guard, Sprinter..."
+              value={form.position}
+              onChange={e => update("position", e.target.value)}
+              onKeyDown={e => e.key === "Enter" && nextStep()}
+            />
+          </div>
+          <div className="auth-step-nav">
+            <button className="btn btn-ghost" onClick={() => { setStep(1); setError(""); }}>Back</button>
+            <button className="btn btn-primary" onClick={nextStep}>Continue</button>
+          </div>
+        </>
+      );
+    }
+
+    if (step === 3) {
+      return (
+        <>
+          <div className="auth-title">What's your level?</div>
+          <div className="auth-sub">Your coach will calibrate feedback to match your experience</div>
+          {error && <div className="error-msg">{error}</div>}
+          <div className="level-cards">
+            {LEVELS.map(l => (
+              <div
+                key={l.value}
+                className={`level-card${form.experienceLevel === l.value ? " selected" : ""}`}
+                onClick={() => update("experienceLevel", l.value)}
+              >
+                <div className="level-card-info">
+                  <div className="level-card-name">{l.label}</div>
+                  <div className="level-card-desc">{l.desc}</div>
+                </div>
+                <div className="level-card-check">{form.experienceLevel === l.value ? "✓" : ""}</div>
+              </div>
+            ))}
+          </div>
+          <div className="auth-step-nav">
+            <button className="btn btn-ghost" onClick={() => { setStep(2); setError(""); }}>Back</button>
+            <button className="btn btn-primary" onClick={submit} disabled={loading}>
+              {loading ? <><span className="spinner" /> Creating account...</> : "Create Account"}
+            </button>
+          </div>
+        </>
+      );
     }
   };
 
@@ -73,58 +197,40 @@ export default function AuthPage() {
       <div className="auth-form-panel">
         <div className="auth-form-inner">
           <div className="auth-logo">Ghost<span>Coach</span></div>
-          <div className="auth-title">{mode === "login" ? "Welcome back" : "Create account"}</div>
-          <div className="auth-sub">{mode === "login" ? "Sign in to continue your training" : "Start your coaching journey today"}</div>
-
-          {success && <div className="success-msg">✓ {success}</div>}
-          {error && <div className="error-msg">{error}</div>}
-
-          <div className="form-group">
-            <label className="form-label">Email</label>
-            <input className="form-input" type="email" placeholder="you@example.com" value={form.email}
-              onChange={e => update("email", e.target.value)} onKeyDown={e => e.key === "Enter" && submit()} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Password</label>
-            <input className="form-input" type="password" placeholder="••••••••" value={form.password}
-              onChange={e => update("password", e.target.value)} onKeyDown={e => e.key === "Enter" && submit()} />
-          </div>
 
           {mode === "register" && (
-            <>
-              <div className="form-group">
-                <label className="form-label">Sport</label>
-                <select className="form-select" value={form.sport} onChange={e => update("sport", e.target.value)}>
-                  <option value="football">Football</option>
-                  <option value="basketball">Basketball</option>
-                  <option value="tennis">Tennis</option>
-                  <option value="athletics">Athletics</option>
-                  <option value="boxing">Boxing</option>
-                  <option value="swimming">Swimming</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label className="form-label">Position / Role</label>
-                <input className="form-input" placeholder="e.g. Striker, Point Guard, Sprinter..."
-                  value={form.position} onChange={e => update("position", e.target.value)} />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Experience Level</label>
-                <select className="form-select" value={form.experienceLevel} onChange={e => update("experienceLevel", e.target.value)}>
-                  <option value="BEGINNER">Beginner</option>
-                  <option value="INTERMEDIATE">Intermediate</option>
-                  <option value="ADVANCED">Advanced</option>
-                  <option value="PROFESSIONAL">Professional</option>
-                </select>
-              </div>
-            </>
+            <div className="auth-step-progress">
+              {STEP_LABELS.map((_, i) => (
+                <div
+                  key={i}
+                  className={`auth-step-dot${i + 1 === step ? " active" : i + 1 < step ? " done" : ""}`}
+                />
+              ))}
+            </div>
           )}
 
-          <button className="btn btn-primary" onClick={submit} disabled={loading}>
-            {loading
-              ? <><span className="spinner" /> {mode === "login" ? "Signing in..." : "Creating account..."}</>
-              : mode === "login" ? "Sign In" : "Create Account"}
-          </button>
+          {mode === "login" ? (
+            <>
+              <div className="auth-title">Welcome back</div>
+              <div className="auth-sub">Sign in to continue your training</div>
+              {error && <div className="error-msg">{error}</div>}
+              <div className="form-group">
+                <label className="form-label">Email</label>
+                <input className="form-input" type="email" placeholder="you@example.com" value={form.email}
+                  onChange={e => update("email", e.target.value)} onKeyDown={e => e.key === "Enter" && submit()} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Password</label>
+                <input className="form-input" type="password" placeholder="••••••••" value={form.password}
+                  onChange={e => update("password", e.target.value)} onKeyDown={e => e.key === "Enter" && submit()} />
+              </div>
+              <button className="btn btn-primary" onClick={submit} disabled={loading}>
+                {loading ? <><span className="spinner" /> Signing in...</> : "Sign In"}
+              </button>
+            </>
+          ) : (
+            renderRegisterStep()
+          )}
 
           <div className="auth-switch">
             {mode === "login"

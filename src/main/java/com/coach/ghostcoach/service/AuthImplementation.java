@@ -1,24 +1,21 @@
 package com.coach.ghostcoach.service;
 
-import com.coach.ghostcoach.data.model.Experience;
 import com.coach.ghostcoach.data.model.Player;
 import com.coach.ghostcoach.data.repository.PlayerRepository;
 import com.coach.ghostcoach.dtos.request.LoginRequest;
 import com.coach.ghostcoach.dtos.request.RegisterRequest;
 import com.coach.ghostcoach.dtos.response.AuthResponse;
 import com.coach.ghostcoach.exception.PlayerExistException;
+import org.jspecify.annotations.NonNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -68,7 +65,7 @@ public class AuthImplementation implements Auth {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
         return playerRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username));
     }
 }

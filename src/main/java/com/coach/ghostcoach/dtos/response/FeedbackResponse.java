@@ -7,7 +7,8 @@ import java.util.UUID;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FeedbackResponse {
-    private String OverallScore;
+    private String sessionId;
+    private int overallScore;
     private  String strengths;
     private String areasToImprove;
     private String priorityFix;

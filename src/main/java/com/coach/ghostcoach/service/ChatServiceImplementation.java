@@ -27,6 +27,7 @@ public class ChatServiceImplementation implements ChatService{
         Session session = sessionRepository.findByIdWithPlayerAndFeedback(sessionId).orElseThrow(()-> new SessionNotFoundException("Session Not Found"));
         Player player = session.getPlayer();
         Feedback feedback = session.getFeedback();
+        System.out.println(session);
         Chatlog chatlog =chatLogRepository.findBySessionWithMessages(session).orElseThrow(()-> new ChatLogNotFoundException("chatlog, not found"));
         List<ChatMessage> lastFive = getChatMessages(chatlog);
         String systemedContext = systemContext(feedback,player);
@@ -61,7 +62,8 @@ public class ChatServiceImplementation implements ChatService{
                     "Priority fix: %s. " +
                     "Drill suggestion: %s. " +
                     "Confidence level: %s. " +
-                    "Respond in plain text, no markdown, no bullet points.")
+                    "Respond in plain text, no markdown, no bullet points."+
+                    "always respond like a human coach , no too muh words try to sum it up as possible")
                     .formatted(
                             player.getSport(),
                             player.getSport(),

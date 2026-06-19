@@ -166,6 +166,31 @@ body { background: var(--black); color: var(--white); font-family: var(--font-bo
 .auth-switch { margin-top: 24px; text-align: center; font-size: 14px; color: var(--grey); }
 .auth-switch button { background: none; border: none; color: var(--lime); cursor: pointer; font-size: 14px; font-weight: 600; }
 
+/* ONBOARDING STEPS */
+.auth-step-progress { display: flex; gap: 6px; margin-bottom: 32px; }
+.auth-step-dot { flex: 1; height: 3px; border-radius: 2px; background: var(--border); transition: background 0.3s; }
+.auth-step-dot.active { background: var(--lime); }
+.auth-step-dot.done { background: var(--lime-dim); }
+
+.sport-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.sport-card { padding: 16px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; text-align: center; transition: all 0.2s; }
+.sport-card:hover { border-color: var(--lime); }
+.sport-card.selected { border-color: var(--lime); background: rgba(200,241,53,0.08); }
+.sport-card-icon { font-size: 26px; margin-bottom: 6px; }
+.sport-card-label { font-size: 13px; font-weight: 600; }
+
+.level-cards { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.level-card { padding: 16px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s; }
+.level-card:hover { border-color: var(--lime); }
+.level-card.selected { border-color: var(--lime); background: rgba(200,241,53,0.08); }
+.level-card-info { display: flex; flex-direction: column; }
+.level-card-name { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+.level-card-desc { font-size: 12px; color: var(--grey); }
+.level-card-check { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--black); transition: all 0.2s; flex-shrink: 0; }
+.level-card.selected .level-card-check { background: var(--lime); border-color: var(--lime); }
+
+.auth-step-nav { display: flex; gap: 10px; }
+
 .success-msg { background: rgba(200,241,53,0.1); border: 1px solid var(--lime); border-radius: 8px; padding: 12px 16px; font-size: 14px; color: var(--lime); margin-bottom: 20px; }
 .error-msg { background: rgba(255,68,68,0.1); border: 1px solid var(--red); border-radius: 8px; padding: 12px 16px; font-size: 14px; color: var(--red); margin-bottom: 20px; }
 

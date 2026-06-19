@@ -13,6 +13,7 @@ import com.coach.ghostcoach.dtos.response.SessionCard;
 import com.coach.ghostcoach.exception.*;
 import com.coach.ghostcoach.utils.Mapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +25,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class sessionImplementation implements SessionService {
@@ -40,17 +42,21 @@ public class sessionImplementation implements SessionService {
         String photoPath = saveFile(file);
         Player player = findUser(playerEmail);
         String prompt = prompt(player.getPosition(),player.getExperienceLevel().toString(),player.getSport());
-        Feedback feedback =gemini.generateFeedback(file,prompt);
+        Feedback feedback = gemini.generateFeedback(file, prompt);
+        log.info("Gemini feedback for {}: score={}, confidence={}", playerEmail, feedback.getOverallScore(), feedback.getConfidenceLevel());
         feedbackRepository.save(feedback);
-       Session session = Mapper.createSession(player,photoPath,feedback);
-        createChatLog(session);
+        Session session = Mapper.createSession(player, photoPath, feedback);
         sessionRepository.save(session);
-       return mapper.map(feedback, FeedbackResponse.class);
+        createChatLog(session);
+       FeedbackResponse response = mapper.map(feedback, FeedbackResponse.class);
+        response.setSessionId(session.getSessionId());
+        return response;
     }
 
     private void createChatLog(Session session) {
         Chatlog chatlog =Mapper.createChatLog(session);
         chatLogRepository.save(chatlog);
+        System.out.println(chatlog);
     }
 
     @Override

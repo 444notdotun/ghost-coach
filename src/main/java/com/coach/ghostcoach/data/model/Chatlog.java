@@ -13,7 +13,7 @@ public class Chatlog {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String chatLogId;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "sessionId")
     private Session session;
     @OneToMany(mappedBy = "chatlog", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<ChatMessage> messages;

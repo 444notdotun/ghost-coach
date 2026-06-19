@@ -23,7 +23,7 @@ export default function ChatPage({ session, onBack, onGoHome }) {
     setLoading(true);
     try {
       const res = await sendMessage(sessionId, msg);
-      setMessages(m => [...m, { sender: "AI", content: res.data?.message || res.data }]);
+      setMessages(m => [...m, { sender: "AI", content: res.data?.content }]);
     } catch {
       setMessages(m => [...m, { sender: "AI", content: "Sorry, I couldn't process that. Please try again." }]);
     } finally {

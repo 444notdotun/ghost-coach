@@ -15,6 +15,7 @@ public class ChatMessage{
     @GeneratedValue(strategy = GenerationType.UUID )
     private String id;
     private Sender sender;
+    @Column(columnDefinition = "TEXT")
     private String content;
     @CreationTimestamp
     private LocalDateTime sentAt;

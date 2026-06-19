@@ -12,6 +12,6 @@ import java.util.UUID;
 
 @Repository
 public interface ChatLogRepository extends JpaRepository<Chatlog, String> {
-    @Query("SELECT c FROM Chatlog c JOIN FETCH c.messages WHERE c.session = :session")
+    @Query("SELECT c FROM Chatlog c LEFT JOIN FETCH c.messages WHERE c.session = :session")
     Optional<Chatlog> findBySessionWithMessages(@Param("session") Session session);
 }

@@ -1,5 +1,6 @@
 package com.coach.ghostcoach.data.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -24,6 +25,7 @@ public class Feedback {
     @Column(columnDefinition = "TEXT")
     private String drillSuggestion;
     private ConfidenceLevel confidenceLevel;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "sessionId")
     private Session session;

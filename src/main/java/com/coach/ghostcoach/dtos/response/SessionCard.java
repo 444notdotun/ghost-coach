@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class SessionCard {
     private String photoPath;
     private LocalDateTime createdAt;
-    private String overallScore;
+    private int overallScore;
     private String priorityFix;
     private Feedback fullFeedback;
 }
