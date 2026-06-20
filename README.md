@@ -7,7 +7,7 @@ Tech Stack
     Database: PostgreSQL (Supabase)
     AI: Google Gemini Vision API (gemini-2.0-flash)
     Auth: JWT (access token + refresh token)
-    Deployment: Google Cloud Run
+    Deployment: Backend — Google Cloud Run, Frontend — Netlify
     Containerisation: Docker (multi-stage build)
 
 Features
@@ -154,4 +154,5 @@ Deployment
 
 The app is deployed on Google Cloud Run. The Dockerfile uses a multi-stage build — Maven builder stage compiles the JAR, a slim JRE runtime stage runs it.
 
-Live URL: https://ghostcoach-183135031185.us-central1.run.app
+Live URL (Backend): https://ghostcoach-183135031185.us-central1.run.app
+Live URL (Frontend): https://soft-bonbon-6c7187.netlify.app
