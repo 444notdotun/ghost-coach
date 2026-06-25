@@ -20,6 +20,15 @@ public class GlobalException {
         return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>("Error",e.getMessage()));
     }
 
+    @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse<?>> handleValidationException(org.springframework.web.bind.MethodArgumentNotValidException e){
+        String errorMessage = e.getBindingResult().getFieldErrors().stream()
+                .map(org.springframework.validation.FieldError::getDefaultMessage)
+                .findFirst()
+                .orElse("Validation failed");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>("Error", errorMessage));
+    }
+
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ApiResponse<?>> usernameNotFoundException(UsernameNotFoundException e){
         return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>("Error",e.getMessage()));
