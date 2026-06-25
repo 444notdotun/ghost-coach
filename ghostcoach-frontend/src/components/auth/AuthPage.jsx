@@ -17,16 +17,27 @@ const SPORTS = [
   { value: "athletics", label: "Athletics", icon: "🏃" },
   { value: "boxing", label: "Boxing", icon: "🥊" },
   { value: "swimming", label: "Swimming", icon: "🏊" },
+  { value: "gym", label: "Gym", icon: "🏋️" },
 ];
+
+const SPORT_SUGGESTIONS = {
+  football: ["Striker", "Midfielder", "Defender", "Goalkeeper", "Coach"],
+  basketball: ["Point Guard", "Shooting Guard", "Forward", "Center", "Coach"],
+  tennis: ["Singles Player", "Doubles Player", "Coach"],
+  athletics: ["Sprinter", "Runner", "Jumper", "Thrower", "Coach"],
+  boxing: ["Fighter", "Trainer", "Sparring Partner"],
+  swimming: ["Swimmer", "Coach"],
+  gym: ["Instructor", "Member"],
+};
 
 const LEVELS = [
-  { value: "BEGINNER", label: "Beginner", desc: "Just starting out" },
-  { value: "INTERMEDIATE", label: "Intermediate", desc: "Know the basics" },
-  { value: "ADVANCED", label: "Advanced", desc: "Competing regularly" },
-  { value: "PROFESSIONAL", label: "Professional", desc: "Elite level" },
+  { value: "BEGINNER", label: "BEGINNER", desc: "Just starting out" },
+  { value: "INTERMEDIATE", label: "INTERMEDIATE", desc: "Know the basics" },
+  { value: "ADVANCED", label: "ADVANCED", desc: "Competing regularly" },
+  { value: "PROFESSIONAL", label: "PROFESSIONAL", desc: "Elite level" },
 ];
 
-const INITIAL_FORM = { email: "", password: "", sport: "football", position: "", experienceLevel: "BEGINNER" };
+const INITIAL_FORM = { name: "", email: "", password: "", sport: "", position: "", experienceLevel: "" };
 
 const STEP_LABELS = ["Account", "Your Sport", "Your Level"];
 
@@ -56,8 +67,32 @@ export default function AuthPage() {
   const nextStep = () => {
     setError("");
     if (step === 1) {
-      if (!form.email.trim() || !form.password.trim()) {
-        setError("Please fill in your email and password.");
+      if (!form.name || !form.name.trim() || !form.email.trim() || !form.password.trim()) {
+        setError("Please fill in your name, email, and password.");
+        return;
+      }
+      if (form.name.trim().length < 2) {
+        setError("Name must be at least 2 characters long.");
+        return;
+      }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(form.email.trim())) {
+        setError("Please enter a valid email address.");
+        return;
+      }
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+      if (!passwordRegex.test(form.password)) {
+        setError("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&#).");
+        return;
+      }
+    }
+    if (step === 2) {
+      if (!form.sport) {
+        setError("Please select a sport.");
+        return;
+      }
+      if (!form.position) {
+        setError("Please select your role.");
         return;
       }
     }
@@ -94,6 +129,11 @@ export default function AuthPage() {
           <div className="auth-sub">Start your coaching journey today</div>
           {error && <div className="error-msg">{error}</div>}
           <div className="form-group">
+            <label className="form-label">Full Name</label>
+            <input className="form-input" type="text" placeholder="John Doe" value={form.name || ""}
+              onChange={e => update("name", e.target.value)} onKeyDown={e => e.key === "Enter" && nextStep()} />
+          </div>
+          <div className="form-group">
             <label className="form-label">Email</label>
             <input className="form-input" type="email" placeholder="you@example.com" value={form.email}
               onChange={e => update("email", e.target.value)} onKeyDown={e => e.key === "Enter" && nextStep()} />
@@ -119,7 +159,10 @@ export default function AuthPage() {
               <div
                 key={s.value}
                 className={`sport-card${form.sport === s.value ? " selected" : ""}`}
-                onClick={() => update("sport", s.value)}
+                onClick={() => {
+                  update("sport", s.value);
+                  update("position", "");
+                }}
               >
                 <div className="sport-card-icon">{s.icon}</div>
                 <div className="sport-card-label">{s.label}</div>
@@ -127,14 +170,27 @@ export default function AuthPage() {
             ))}
           </div>
           <div className="form-group">
-            <label className="form-label">Your position / role</label>
-            <input
-              className="form-input"
-              placeholder="e.g. Striker, Point Guard, Sprinter..."
-              value={form.position}
-              onChange={e => update("position", e.target.value)}
-              onKeyDown={e => e.key === "Enter" && nextStep()}
-            />
+            {!form.sport ? (
+              <div style={{ color: "var(--grey)", fontSize: "14px", fontStyle: "italic", marginTop: "8px" }}>
+                Select a sport to choose your role
+              </div>
+            ) : (
+              <>
+                <label className="form-label">Select your role</label>
+                <div className="role-choices">
+                  {SPORT_SUGGESTIONS[form.sport].map(sug => (
+                    <button
+                      key={sug}
+                      type="button"
+                      className={`role-choice-btn${form.position === sug ? " selected" : ""}`}
+                      onClick={() => update("position", sug)}
+                    >
+                      {sug}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
           <div className="auth-step-nav">
             <button className="btn btn-ghost" onClick={() => { setStep(1); setError(""); }}>Back</button>
