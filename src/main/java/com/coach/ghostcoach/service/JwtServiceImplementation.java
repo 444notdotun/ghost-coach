@@ -34,8 +34,6 @@ public class JwtServiceImplementation implements JwtService {
     @Override
     public boolean validateToken(String token, UserDetails player) {
         String email = extractClaims(token).getSubject();
-        System.out.println(email);
-        System.out.println("new validation"+ isTokenExpired(token));
         return email.equals(player.getUsername()) && !isTokenExpired(token) ;
     }
 
